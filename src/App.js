@@ -1,8 +1,8 @@
 import logo from './logo.svg';
 import './App.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { register, login } from './store/actions/userAction';
+import { register, login, logout } from './store/actions/userAction';
 import Loader from './Loader';
 
 function App() {
@@ -17,7 +17,9 @@ function App() {
   const dispatch = useDispatch();
   const { loading, error, userInfo } = useSelector((state) => state.user);
 
-  console.log(loading, error, userInfo);
+  useEffect(() => {
+    
+  }, [userInfo]);
 
   const registerHandler = (e) => {
     setState('register');
@@ -45,105 +47,120 @@ function App() {
     }
   };
 
+  const logoutHandler = (e) => {
+    e.preventDefault();
+    dispatch(logout());
+  };
+
   return (
     <div className='app'>
       <img src={logo} className='app__logo' alt='logo' />
-      <div className='app__forms'>
-        <form onSubmit={registerHandler} action='' className='form'>
-          <label htmlFor='email' className='form__group'>
-            Email
-            <input
-              id='email'
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              type='text'
-            />
-          </label>
-          <label htmlFor='password' className='form__group'>
-            Password
-            <input
-              id='password'
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              type='password'
-            />
-          </label>
-          <label htmlFor='confirmpassword' className='form__group'>
-            Confirm Password
-            <input
-              id='confirmpassword'
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              type='password'
-            />
-          </label>
-          {message && <p className='form__error'>{message}</p>}
 
-          {loading && state === 'register' ? (
-            <Loader />
-          ) : (
-            <>
-              <button className='form__btn' type='submit'>
-                Register
-              </button>
-              {error && state === 'register' && (
-                <h3 style={{ color: 'red', textAlign: 'center' }}>
-                  {error.message}
-                </h3>
-              )}
-              {userInfo && state === 'register' && (
-                <div style={{ color: 'green', textAlign: 'center' }}>
-                  <h1>Successfully registered</h1>
-                  <p>Email: {userInfo.email}</p>
-                  <p>Your id and token is stored now!</p>
-                </div>
-              )}
-            </>
-          )}
-        </form>
-        <div className='vl'></div>
-        <form onSubmit={loginHandler} action='' className='form'>
-          <label htmlFor='loginEmail' className='form__group'>
-            Email
-            <input
-              value={loginEmail}
-              onChange={(e) => setLoginEmail(e.target.value)}
-              id='loginEmail'
-              type='text'
-            />
-          </label>
-          <label htmlFor='loginPassword' className='form__group'>
-            Password
-            <input
-              value={loginPassword}
-              onChange={(e) => setLoginPassword(e.target.value)}
-              id='loginPassword'
-              type='password'
-            />
-          </label>
-          {loginMessage && <p>{loginMessage}</p>}
+      {userInfo ? (
+        <>
+          <p>You are already logged in: {userInfo.email}</p>
+          <button onClick={logoutHandler} className='form__btn'>
+            Log out
+          </button>
+        </>
+      ) : (
+        <div className='app__forms'>
+          <form onSubmit={registerHandler} action='' className='form'>
+            <label htmlFor='email' className='form__group'>
+              Email
+              <input
+                id='email'
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                type='text'
+              />
+            </label>
+            <label htmlFor='password' className='form__group'>
+              Password
+              <input
+                id='password'
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                type='password'
+              />
+            </label>
+            <label htmlFor='confirmpassword' className='form__group'>
+              Confirm Password
+              <input
+                id='confirmpassword'
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                type='password'
+              />
+            </label>
+            {message && <p className='form__error'>{message}</p>}
 
-          {loading ? (
-            <Loader />
-          ) : (
-            <>
-              <button className='form__btn' type='submit'>
-                Login
-              </button>
-              {error && state === 'login' && (
-                <h3 style={{ color: 'red', textAlign: 'center' }}>
-                  {error.message}
-                </h3>
-              )}
-              {userInfo && state === 'login' && (
-                <div style={{ color: 'green', textAlign: 'center' }}>
-                  <h1>Successfully logged in</h1>
-                </div>
-              )}
-            </>
-          )}
-        </form>
-      </div>
+            {loading && state === 'register' ? (
+              <Loader />
+            ) : (
+              <>
+                <button className='form__btn' type='submit'>
+                  Register
+                </button>
+                {error && state === 'register' && (
+                  <h3 style={{ color: 'red', textAlign: 'center' }}>
+                    {error.message}
+                  </h3>
+                )}
+                {userInfo && state === 'register' && (
+                  <div style={{ color: 'green', textAlign: 'center' }}>
+                    <h1>Successfully registered</h1>
+                    <p>Email: {userInfo.email}</p>
+                    <p>Your id and token is stored now!</p>
+                  </div>
+                )}
+              </>
+            )}
+          </form>
+          <div className='vl'></div>
+          <form onSubmit={loginHandler} action='' className='form'>
+            <label htmlFor='loginEmail' className='form__group'>
+              Email
+              <input
+                value={loginEmail}
+                onChange={(e) => setLoginEmail(e.target.value)}
+                id='loginEmail'
+                type='text'
+              />
+            </label>
+            <label htmlFor='loginPassword' className='form__group'>
+              Password
+              <input
+                value={loginPassword}
+                onChange={(e) => setLoginPassword(e.target.value)}
+                id='loginPassword'
+                type='password'
+              />
+            </label>
+            {loginMessage && <p>{loginMessage}</p>}
+
+            {loading ? (
+              <Loader />
+            ) : (
+              <>
+                <button className='form__btn' type='submit'>
+                  Login
+                </button>
+                {error && state === 'login' && (
+                  <h3 style={{ color: 'red', textAlign: 'center' }}>
+                    {error.message}
+                  </h3>
+                )}
+                {userInfo && state === 'login' && (
+                  <div style={{ color: 'green', textAlign: 'center' }}>
+                    <h1>Successfully logged in</h1>
+                  </div>
+                )}
+              </>
+            )}
+          </form>
+        </div>
+      )}
     </div>
   );
 }

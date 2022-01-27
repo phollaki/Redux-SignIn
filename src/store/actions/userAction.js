@@ -51,10 +51,21 @@ export const login = (email, password) => async (dispatch) => {
       type: 'USER_LOGIN_SUCCESS',
       payload: { email, token: data.token },
     });
+
+    localStorage.setItem(
+      'userInfo',
+      JSON.stringify({ email, token: data.token })
+    );
   } catch (error) {
     dispatch({
       type: 'USER_LOGIN_FAIL',
       payload: error,
     });
   }
+};
+export const logout = () => async (dispatch) => {
+  localStorage.removeItem('userInfo');
+  dispatch({
+    type: 'USER_LOGOUT',
+  });
 };

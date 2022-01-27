@@ -7,10 +7,19 @@ const reducers = combineReducers({
   user: userReducer,
 });
 
+const userInfoFromLocalStorage = localStorage.getItem('userInfo')
+  ? JSON.parse(localStorage.getItem('userInfo'))
+  : null;
+
+const initialState = {
+  user: { userInfo: userInfoFromLocalStorage },
+};
+
 const middleware = [thunk];
 
 const store = createStore(
   reducers,
+  initialState,
   composeWithDevTools(applyMiddleware(...middleware))
 );
 
